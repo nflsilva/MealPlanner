@@ -7,8 +7,10 @@ import './App.css';
 import Navbar from "./components/layout/Navbar";
 import Dashboard from "./components/dashboard/Dashboard";
 import MealsList from "./components/meal/MealList";
+import MealForm from './components/meal/MealForm';
 import IngredientsList from "./components/ingredient/IngredientList";
 import IngredientForm from './components/ingredient/IngredientForm';
+
 
 function App() {
   return (
@@ -25,6 +27,9 @@ function App() {
           <Route exact path="/ingredient" component={IngredientForm}/>
           <Route path="/ingredient/:id/" component={IngredientForm}/>
           
+          <Route exact path="/meal" component={MealForm}/>
+          <Route path="/meal/:id/" component={MealForm}/>
+
         </Switch>
 
       </div>

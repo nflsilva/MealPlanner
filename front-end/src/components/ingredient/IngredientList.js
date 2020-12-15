@@ -12,14 +12,13 @@ export default function IngredientList() {
 
     useEffect(() => {
         Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/`)
-       .then((res) => {
-            console.log(res)
+        .then((res) => {
             setIngredients(res.data)
-       })
-       .catch((err) => {
-           console.log(err)
-       })
-    },[])
+        })
+        .catch((err) => {
+            alert.error(err)
+        })
+    }, [])
 
     return (    
         <Fragment>
@@ -27,9 +26,9 @@ export default function IngredientList() {
             <Grid container spacing={2}>
                 <Grid item xs={2}>
                     <GridCard 
-                    name={'Add new'} 
-                    isAdd={true}
-                    link={'/ingredient'}
+                        name={'Add new'} 
+                        isAdd={true}
+                        link={'/ingredient'}
                     />
                 </Grid>
                 {ingredients.map((ingredient) => (

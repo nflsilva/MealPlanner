@@ -13,21 +13,6 @@ export default function IngredientForm({ match }) {
 
     const alert = useAlert();
 
-    useEffect(() => {
-        if(match.params.id){
-            Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/${match.params.id}/`)
-            .then((res) => {
-                setName(res.data.name)
-                setProteins(res.data.proteins)
-                setFats(res.data.fats)
-                setCarbohydrates(res.data.carbohydrates)
-            })
-            .catch((err) => {
-                console.log(err)
-            })
-        }
-    }, [match.params.id])
-
     const stateHandlers = {
         'name':setName,
         'proteins':setProteins,
@@ -75,10 +60,25 @@ export default function IngredientForm({ match }) {
             }, 2000);
         })
         .catch((err) => {
-            console.log(err)
+            alert.error(err)
         })
 
     }
+
+    useEffect(() => {
+        if(match.params.id){
+            Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/${match.params.id}/`)
+            .then((res) => {
+                setName(res.data.name)
+                setProteins(res.data.proteins)
+                setFats(res.data.fats)
+                setCarbohydrates(res.data.carbohydrates)
+            })
+            .catch((err) => {
+                alert.error(err)
+            })
+        }
+    }, [match.params.id, alert])
 
 
     return (
