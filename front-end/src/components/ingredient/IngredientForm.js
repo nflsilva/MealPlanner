@@ -26,7 +26,7 @@ export default function IngredientForm({ match }) {
 
     const onAmountChange = (e) => {
         const amount = e.target.value;
-        const maxLen = amount.includes('.') ? 5 : 4
+        const maxLen = amount.includes('.') ? 4 : 3
         if (amount.length < maxLen && (!amount || amount.match(/^\d{1,}(\.\d{0,4})?$/))) {
             onChange(e)
         }
@@ -45,11 +45,11 @@ export default function IngredientForm({ match }) {
         var promess
         var alertMessage
         if(match.params.id){
-            promess = Axios.put(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/${match.params.id}/`, ing);
+            promess = Axios.put(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/${match.params.id}/`, ing);
             alertMessage = 'updated';
         }
         else {
-            promess = Axios.post(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/`, ing);
+            promess = Axios.post(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/`, ing);
             alertMessage = 'added';
         }
 
@@ -67,7 +67,7 @@ export default function IngredientForm({ match }) {
 
     useEffect(() => {
         if(match.params.id){
-            Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/${match.params.id}/`)
+            Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/${match.params.id}/`)
             .then((res) => {
                 setName(res.data.name)
                 setProteins(res.data.proteins)

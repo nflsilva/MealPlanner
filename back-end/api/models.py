@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Ingredient(models.Model):
 
     name = models.CharField(max_length=112, unique=True)
@@ -10,9 +11,15 @@ class Ingredient(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
 
 
+class IngredientAmount(models.Model):
+
+    amount = models.CharField(max_length=5)
+    ingredient = models.ForeignKey(Ingredient, on_delete=models.CASCADE)
+
+
 class Meal(models.Model):
 
     name = models.CharField(max_length=112, unique=True)
-    ingredients = models.ManyToManyField(Ingredient)
+    ingredientAmounts = models.ManyToManyField(IngredientAmount)
 
     last_updated = models.DateTimeField(auto_now=True)

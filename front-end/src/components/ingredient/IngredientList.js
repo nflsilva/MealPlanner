@@ -11,12 +11,12 @@ export default function IngredientList() {
     const [ingredients, setIngredients] = useState([])
 
     useEffect(() => {
-        Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredient/`)
+        Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/`)
         .then((res) => {
             setIngredients(res.data)
         })
         .catch((err) => {
-            alert.error(err)
+            console.log(err)
         })
     }, [])
 

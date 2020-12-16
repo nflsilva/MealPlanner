@@ -10,7 +10,7 @@ export default function MealList() {
     const [meals, setMeals] = useState([])
 
     useEffect(() => {
-        Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/meal/`)
+        Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/`)
        .then((res) => {
             setMeals(res.data)
        })
