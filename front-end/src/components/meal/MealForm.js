@@ -11,6 +11,7 @@ export default function MealForm({ match }) {
     const [name, setName] = useState('')
     const [ingredientAmounts, setIngredientAmounts] = useState([])
     const [removedIngredients, setRemovedIngredients] = useState([])
+    const [image, setImage] = useState('')
     
     const [newIngredientAmout, setNewAmout] = useState(null)
     const [newIngredient, setNewIngredient] = useState(null)
@@ -30,18 +31,26 @@ export default function MealForm({ match }) {
 
         const meal = {
           name: name,
+          image: image,
           ingredientAmounts: ingredientAmounts,
           removedIngredients: removedIngredients,
         }
 
+        var formData = new FormData();
+        formData.append("name", meal.name)
+        formData.append("image", meal.image)
+        formData.append("ingredientAmounts", JSON.stringify(meal.ingredientAmounts))
+        formData.append("removedIngredients", JSON.stringify(meal.removedIngredients))
+
+        let headers = { headers: {'Content-Type': 'multipart/form-data'}}
         var promess
         var alertMessage
         if(match.params.id){
-            promess = Axios.put(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/${match.params.id}/`, meal);
+            promess = Axios.put(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/${match.params.id}/`, formData, headers);
             alertMessage = 'updated';
         }
         else {
-            promess = Axios.post(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/`, meal);
+            promess = Axios.post(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/`, formData, headers);
             alertMessage = 'added';
         }
 
@@ -101,6 +110,10 @@ export default function MealForm({ match }) {
         }))
     }
 
+    const onImageChange = (e) => {
+        setImage(e.target.files[0])
+    }
+
     useEffect(() => {
         if(match.params.id){
             Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/${match.params.id}/`)
@@ -124,7 +137,7 @@ export default function MealForm({ match }) {
 
                     <div className="form-group row">
 
-                        <div className="col-sm-4">
+                        <div className="col-sm-12 col-md-4">
                             <label className="col-form-label">Name</label>
                             <input 
                                 type="text"
@@ -138,16 +151,7 @@ export default function MealForm({ match }) {
                             />
                         </div>
 
-                        <div className="col-sm-4">
-                            <label className="col-form-label disabled">Rating</label>
-                            <input 
-                                type="text"
-                                className="form-control"
-                                disabled={true}
-                            />
-                        </div>
-
-                        <div className="col-sm-4">
+                        <div className="col-sm-12 col-md-4">
                             <label className="col-form-label">Time</label>
                             <input 
                                 type="text"
@@ -156,15 +160,29 @@ export default function MealForm({ match }) {
                             />
                         </div>
 
+                        <div className="col-sm-12 col-md-4">
+                            <label className="col-form-label">Image</label>
+                            <input 
+                                type="file" 
+                                className="form-control-file" 
+                                name={"image"} 
+                                id={"image"} 
+                                onChange={onImageChange}
+                            />
+                        </div>
+
+
                     </div>
 
-                    <div className="form-group row">
-                        <table className="table table-striped col-sm-6 offset-sm-3">
+                    <div className="form-group row col-md-8 offset-md-2">
+                        <table className="table table-striped">
+
                             <thead>
-                                <th className="col-md-1"></th>
-                                <th className="col-md-1"><label className="col-form-label">Amount</label></th>
-                                <th className="col-md-4"><label className="col-form-label">Ingredient</label></th>
+                                <th className="col-1"></th>
+                                <th className="col-2"><label className="col-form-label">Amount</label></th>
+                                <th className="col-9"><label className="col-form-label">Ingredient</label></th>
                             </thead>
+
                             <tbody>
                                 {ingredientAmounts.map((ingredientAmount, index) => (
                                     <tr key={ingredientAmount.ingredient.id}>
@@ -174,7 +192,7 @@ export default function MealForm({ match }) {
                                     </tr>
                                 ))}
                                 <tr>
-                                    <td><MdAddCircleOutline onClick={onNewIngredientAdd} /></td>
+                                    <td><MdAddCircleOutline onClick={onNewIngredientAdd}/></td>
                                     <td><input onChange={onChange} type="text" className="form-control" id="amount" name="amount" placeholder="100g" value={newIngredientAmout ?? ''}/></td>
                                     <td>
                                         <AsyncSelect 
@@ -188,8 +206,6 @@ export default function MealForm({ match }) {
                                             getOptionValue={e => e.id}
                                         />
                                     </td>
-
-
                                 </tr>
                             </tbody>
 

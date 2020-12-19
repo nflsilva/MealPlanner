@@ -6,6 +6,11 @@ def upload_file_path_ingredient(instance, filename):
     return "/".join(["ingredient", str(instance.name) + "." + ext[len(ext) - 1]])
 
 
+def upload_file_path_meal(instance, filename):
+    ext = filename.split(".")
+    return "/".join(["meal", str(instance.name) + "." + ext[len(ext) - 1]])
+
+
 class Ingredient(models.Model):
 
     name = models.CharField(max_length=112, unique=True)
@@ -30,3 +35,5 @@ class Meal(models.Model):
     ingredientAmounts = models.ManyToManyField(IngredientAmount)
 
     last_updated = models.DateTimeField(auto_now=True)
+
+    image = models.ImageField(upload_to=upload_file_path_meal, default=None)

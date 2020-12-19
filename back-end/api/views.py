@@ -2,6 +2,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from django.db import transaction
+import json
 
 from .serializers import (
     IngredientSerializer,
@@ -37,6 +38,7 @@ def ingredients(request):
                 proteins=request.data["proteins"],
                 fats=request.data["fats"],
                 carbohydrates=request.data["carbohydrates"],
+                image=request.data["image"],
             )
             ingredient.save()
 
@@ -66,7 +68,6 @@ def ingredientDetail(request, id):
         ingredient.carbohydrates = request.data["carbohydrates"]
         ingredient.image = request.data["image"]
 
-        print(ingredient.image)
         ingredient.save()
 
         return Response()
@@ -84,8 +85,8 @@ def meals(request):
 
     elif request.method == "POST":
 
-        ingredientAmounts = request.data["ingredientAmounts"]
-        meal = Meal(name=request.data["name"])
+        ingredientAmounts = json.loads(request.data["ingredientAmounts"])
+        meal = Meal(name=request.data["name"], image=request.data["image"])
         meal.save()
         for ia in ingredientAmounts:
 
@@ -118,43 +119,41 @@ def mealDetail(request, id):
 
     elif request.method == "PUT":
 
-        try:
-            name = request.data["name"]
-            ingredientAmounts = request.data["ingredientAmounts"]
-            ingredientsToDelete = request.data["removedIngredients"]
+        name = request.data["name"]
+        ingredientAmounts = json.loads(request.data["ingredientAmounts"])
+        ingredientsToDelete = json.loads(request.data["removedIngredients"])
 
-            for ia in ingredientAmounts:
+        for ia in ingredientAmounts:
 
-                ia_ingredient_id = ia["ingredient"]["id"]
-                related_ingredient = Ingredient.objects.get(id=ia_ingredient_id)
+            ia_ingredient_id = ia["ingredient"]["id"]
+            related_ingredient = Ingredient.objects.get(id=ia_ingredient_id)
 
-                try:
-                    old_ia = meal.ingredientAmounts.get(ingredient=related_ingredient)
-                except:
-                    # did not find
-                    old_ia = None
+            try:
+                old_ia = meal.ingredientAmounts.get(ingredient=related_ingredient)
+            except:
+                # did not find
+                old_ia = None
 
-                if old_ia is None:
-                    # Create news
-                    new_ia = IngredientAmount(
-                        amount=ia["amount"],
-                        ingredient=related_ingredient,
-                    )
-                    new_ia.save()
-                    meal.ingredientAmounts.add(new_ia)
-                    new_ia.save()
-                else:
-                    # Update olds
-                    if old_ia.id in ingredientsToDelete:
-                        ingredientsToDelete.remove(old_ia.id)
-                    old_ia.amount = ia["amount"]
-                    old_ia.save()
+            if old_ia is None:
+                # Create news
+                new_ia = IngredientAmount(
+                    amount=ia["amount"],
+                    ingredient=related_ingredient,
+                )
+                new_ia.save()
+                meal.ingredientAmounts.add(new_ia)
+                new_ia.save()
+            else:
+                # Update olds
+                if old_ia.id in ingredientsToDelete:
+                    ingredientsToDelete.remove(old_ia.id)
+                old_ia.amount = ia["amount"]
+                old_ia.save()
 
-            for toDelete in ingredientsToDelete:
-                meal.ingredientAmounts.get(id=toDelete).delete()
+        for toDelete in ingredientsToDelete:
+            meal.ingredientAmounts.get(id=toDelete).delete()
 
-            meal.name = name
-            meal.save()
-            return Response()
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        meal.name = name
+        meal.image = request.data["image"]
+        meal.save()
+        return Response()

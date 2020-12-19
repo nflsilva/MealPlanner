@@ -40,8 +40,6 @@ export default function IngredientForm({ match }) {
     const onSubmit = (e) => {
         e.preventDefault();
 
-        console.log(image)
-
         const ing = {
           name: name,
           proteins: proteins==='' ? 0.0 : proteins,

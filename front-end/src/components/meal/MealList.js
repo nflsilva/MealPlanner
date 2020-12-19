@@ -21,20 +21,21 @@ export default function MealList() {
     return (
         <Fragment>
             <PageTitle title="My Meals"/>
-            <Grid container spacing={2}>
-                <Grid item xs={2}>
+            <Grid container spacing={1}>
+                <Grid item xs={6} sm={3} md={2} lm={1}>
                     <GridCard 
                         name={'Add new'} 
-                        isAdd={true}
+                        isAdd={true} 
                         link={'/meal'}
                     />
                 </Grid>
                 {meals.map((meal) => (
-                    <Grid key={meal.id} item xs={2}>
+                    <Grid key={meal.id} item xs={6} sm={3} md={2} lm={1}>
                         <GridCard 
                             name={`${meal.name}`} 
                             isAdd={false} 
-                            link={`/meal/${meal.id}/`}
+                            link={`/meal/${meal.id}/`} 
+                            image={meal.image}
                         />
                     </Grid>
                 ))}

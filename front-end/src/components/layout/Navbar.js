@@ -1,32 +1,24 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
+import { Nav, Navbar} from 'react-bootstrap';
 
-export default function Navbar() {
+export default function TopNavbar() {
     return (
 
-        <nav className="navbar navbar-expand-lg navbar-dark bg-primary">
-            
+        <Navbar collapseOnSelect expand="lg" className="navbar navbar-expand-lg navbar-dark bg-primary">
             <Link className="navbar-brand" to="/">Meal Planner</Link>
-            
-            <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarColor01" aria-controls="navbarColor01" aria-expanded="false" aria-label="Toggle navigation">
-                <span className="navbar-toggler-icon"></span>
-            </button>
-
-            <div className="collapse navbar-collapse" id="navbarColor01">
-                <ul className="navbar-nav mr-auto">
-                    
-                    <li className="nav-item">
+            <Navbar.Toggle className="navbar-toggler" />
+            <Navbar.Collapse>
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item">
                         <Link className="nav-link" to="/meals/">Meals</Link>
                     </li>
-
-                    <li className="nav-item">
+                    <li class="nav-item">
                         <Link className="nav-link" to="/ingredients/">Ingredients</Link>
                     </li>
-
                 </ul>
-            </div>
-        
-        </nav>
+            </Navbar.Collapse>
+        </Navbar>
 
     )
 }

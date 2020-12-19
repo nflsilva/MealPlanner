@@ -23,8 +23,8 @@ export default function IngredientList() {
     return (    
         <Fragment>
             <PageTitle title="My Ingredients"/>
-            <Grid container spacing={2}>
-                <Grid item xs={2}>
+            <Grid container spacing={1}>
+                <Grid item xs={6} sm={3} md={2} lm={1}>
                     <GridCard 
                         name={'Add new'} 
                         isAdd={true}
@@ -32,12 +32,12 @@ export default function IngredientList() {
                     />
                 </Grid>
                 {ingredients.map((ingredient) => (
-                    <Grid key={ingredient.id} item xs={2}>
+                    <Grid key={ingredient.id} item xs={6} sm={3} md={2} lm={1}>
                         <GridCard 
                             name={`${ingredient.name}`} 
                             isAdd={false} 
-                            link={`/ingredient/${ingredient.id}/`}
-                            image={`${ingredient.image}`}
+                            link={`/ingredient/${ingredient.id}/`} 
+                            image={ingredient.image}
                         />
                     </Grid>
                 ))}

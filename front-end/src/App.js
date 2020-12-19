@@ -4,7 +4,7 @@ import './App.css';
 
 
 
-import Navbar from "./components/layout/Navbar";
+import TopNavbar from "./components/layout/Navbar";
 import Dashboard from "./components/dashboard/Dashboard";
 import MealsList from "./components/meal/MealList";
 import MealForm from './components/meal/MealForm';
@@ -16,7 +16,7 @@ function App() {
   return (
     <div className="App">
       <div className="container">
-        <Navbar />
+        <TopNavbar />
 
         <Switch>
           <Route exact path="/" component={Dashboard}/>
