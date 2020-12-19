@@ -37,6 +37,7 @@ export default function IngredientList() {
                             name={`${ingredient.name}`} 
                             isAdd={false} 
                             link={`/ingredient/${ingredient.id}/`}
+                            image={`${ingredient.image}`}
                         />
                     </Grid>
                 ))}

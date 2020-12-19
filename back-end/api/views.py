@@ -60,16 +60,16 @@ def ingredientDetail(request, id):
 
     elif request.method == "PUT":
 
-        try:
-            ingredient.name = request.data["name"]
-            ingredient.proteins = request.data["proteins"]
-            ingredient.fats = request.data["fats"]
-            ingredient.carbohydrates = request.data["carbohydrates"]
-            ingredient.save()
+        ingredient.name = request.data["name"]
+        ingredient.proteins = request.data["proteins"]
+        ingredient.fats = request.data["fats"]
+        ingredient.carbohydrates = request.data["carbohydrates"]
+        ingredient.image = request.data["image"]
 
-            return Response()
-        except:
-            return Response(status=status.HTTP_400_BAD_REQUEST)
+        print(ingredient.image)
+        ingredient.save()
+
+        return Response()
 
 
 @transaction.atomic

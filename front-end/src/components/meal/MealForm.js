@@ -56,13 +56,16 @@ export default function MealForm({ match }) {
         })
 
     }
-
     const onNewIngredientChange = (v) => {
         setNewIngredient(v);
     }
+    
     const loadOptions = (inputValue, callback) => {
         if(inputValue){
-            Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/?name=${inputValue}`)
+        
+            Axios.get(
+                `${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/?name=${inputValue}`
+            )
             .then((res) => {
                 callback(
                     res.data.filter((e) => {
@@ -71,7 +74,12 @@ export default function MealForm({ match }) {
                 )
             })
             .catch((err) => {
-                console.log(err)
+                if(Axios.isCancel(err)){
+                    console.log("Canceled!")
+                }
+                else {
+                    console.log(err)
+                }
             })
         }
     }

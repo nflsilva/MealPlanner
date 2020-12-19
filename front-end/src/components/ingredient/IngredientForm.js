@@ -10,6 +10,7 @@ export default function IngredientForm({ match }) {
     const [proteins, setProteins] = useState('')
     const [fats, setFats] = useState('')
     const [carbohydrates, setCarbohydrates] = useState('')
+    const [image, setImage] = useState('')
 
     const alert = useAlert();
 
@@ -32,20 +33,43 @@ export default function IngredientForm({ match }) {
         }
     }
 
+    const onImageChange = (e) => {
+        setImage(e.target.files[0])
+    }
+
     const onSubmit = (e) => {
         e.preventDefault();
+
+        console.log(image)
 
         const ing = {
           name: name,
           proteins: proteins==='' ? 0.0 : proteins,
           fats: fats==='' ? 0.0 : fats,
-          carbohydrates: carbohydrates==='' ? 0.0 : carbohydrates
+          carbohydrates: carbohydrates==='' ? 0.0 : carbohydrates,
+          image: image
         }
+
+
+        var formData = new FormData();
+        formData.append("name", ing.name)
+        formData.append("proteins", ing.proteins)
+        formData.append("fats", ing.fats)
+        formData.append("carbohydrates", ing.carbohydrates)
+        formData.append("image", ing.image)
+
 
         var promess
         var alertMessage
         if(match.params.id){
-            promess = Axios.put(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/${match.params.id}/`, ing);
+            promess = Axios.put(
+                `${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/${match.params.id}/`, 
+                formData,
+                {
+                    headers: {
+                      'Content-Type': 'multipart/form-data'
+                    }
+                });
             alertMessage = 'updated';
         }
         else {
@@ -57,10 +81,10 @@ export default function IngredientForm({ match }) {
             alert.success(`${name} was successfully ${alertMessage}.`);
             setTimeout(() => {
                 window.location.href = '/ingredients/'
-            }, 2000);
+            }, 1000);
         })
         .catch((err) => {
-            alert.error(err)
+            console.log(err)
         })
 
     }
@@ -145,6 +169,19 @@ export default function IngredientForm({ match }) {
                                 value={carbohydrates} 
                                 onChange={onAmountChange}
                                 placeholder="0.0"
+                            />
+                        </div>
+                    </div>
+
+                    <div className="form-group row">
+                        <label className="col-sm-2 col-form-label">Image</label>
+                        <div className="col-sm-10">
+                            <input 
+                                type="file" 
+                                className="form-control-file" 
+                                name={"image"} 
+                                id={"image"} 
+                                onChange={onImageChange}
                             />
                         </div>
                     </div>
