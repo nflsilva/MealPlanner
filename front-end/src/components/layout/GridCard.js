@@ -19,7 +19,6 @@ export default function GridCard(props) {
             </Link>
             <div className="card-body">
                 <h6 className="card-title">{props.name}</h6>
-                <p className="card-text"></p>
             </div>
         </div>
 
