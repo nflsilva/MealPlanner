@@ -61,7 +61,7 @@ export default function MealForm({ match }) {
             }, 2000);
         })
         .catch((err) => {
-            console.log(err)
+            alert.error(err.response.data)
         })
 
     }

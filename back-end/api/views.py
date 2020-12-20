@@ -1,7 +1,7 @@
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
-from django.db import transaction
+from django.db import transaction, IntegrityError
 import json
 
 from .serializers import (
@@ -43,6 +43,13 @@ def ingredients(request):
             ingredient.save()
 
             return Response()
+
+        except IntegrityError:
+            name = request.data["name"]
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                data=f"The name '{name}' already exists.",
+            )
         except:
             return Response(status=status.HTTP_400_BAD_REQUEST)
 
@@ -62,13 +69,23 @@ def ingredientDetail(request, id):
 
     elif request.method == "PUT":
 
-        ingredient.name = request.data["name"]
-        ingredient.proteins = request.data["proteins"]
-        ingredient.fats = request.data["fats"]
-        ingredient.carbohydrates = request.data["carbohydrates"]
-        ingredient.image = request.data["image"]
+        try:
+            ingredient.name = request.data["name"]
+            ingredient.proteins = request.data["proteins"]
+            ingredient.fats = request.data["fats"]
+            ingredient.carbohydrates = request.data["carbohydrates"]
+            ingredient.image = request.data["image"]
 
-        ingredient.save()
+            ingredient.save()
+
+        except IntegrityError:
+            name = request.data["name"]
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                data=f"The name '{name}' already exists.",
+            )
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
         return Response()
 
@@ -85,23 +102,34 @@ def meals(request):
 
     elif request.method == "POST":
 
-        ingredientAmounts = json.loads(request.data["ingredientAmounts"])
-        meal = Meal(name=request.data["name"], image=request.data["image"])
-        meal.save()
-        for ia in ingredientAmounts:
+        try:
+            ingredientAmounts = json.loads(request.data["ingredientAmounts"])
+            meal = Meal(name=request.data["name"], image=request.data["image"])
+            meal.save()
+            for ia in ingredientAmounts:
 
-            ia_ingredient_id = ia["ingredient"]["id"]
-            related_ingredient = Ingredient.objects.get(id=ia_ingredient_id)
+                ia_ingredient_id = ia["ingredient"]["id"]
+                related_ingredient = Ingredient.objects.get(id=ia_ingredient_id)
 
-            new_ia = IngredientAmount(
-                amount=ia["amount"],
-                ingredient=related_ingredient,
+                new_ia = IngredientAmount(
+                    amount=ia["amount"],
+                    ingredient=related_ingredient,
+                )
+                new_ia.save()
+                meal.ingredientAmounts.add(new_ia)
+
+            meal.save()
+            return Response()
+
+        except IntegrityError:
+            name = request.data["name"]
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                data=f"The name '{name}' already exists.",
             )
-            new_ia.save()
-            meal.ingredientAmounts.add(new_ia)
 
-        meal.save()
-        return Response()
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 
 @transaction.atomic
@@ -119,41 +147,52 @@ def mealDetail(request, id):
 
     elif request.method == "PUT":
 
-        name = request.data["name"]
-        ingredientAmounts = json.loads(request.data["ingredientAmounts"])
-        ingredientsToDelete = json.loads(request.data["removedIngredients"])
+        try:
+            name = request.data["name"]
+            ingredientAmounts = json.loads(request.data["ingredientAmounts"])
+            ingredientsToDelete = json.loads(request.data["removedIngredients"])
 
-        for ia in ingredientAmounts:
+            for ia in ingredientAmounts:
 
-            ia_ingredient_id = ia["ingredient"]["id"]
-            related_ingredient = Ingredient.objects.get(id=ia_ingredient_id)
+                ia_ingredient_id = ia["ingredient"]["id"]
+                related_ingredient = Ingredient.objects.get(id=ia_ingredient_id)
 
-            try:
-                old_ia = meal.ingredientAmounts.get(ingredient=related_ingredient)
-            except:
-                # did not find
-                old_ia = None
+                try:
+                    old_ia = meal.ingredientAmounts.get(ingredient=related_ingredient)
+                except:
+                    # did not find
+                    old_ia = None
 
-            if old_ia is None:
-                # Create news
-                new_ia = IngredientAmount(
-                    amount=ia["amount"],
-                    ingredient=related_ingredient,
-                )
-                new_ia.save()
-                meal.ingredientAmounts.add(new_ia)
-                new_ia.save()
-            else:
-                # Update olds
-                if old_ia.id in ingredientsToDelete:
-                    ingredientsToDelete.remove(old_ia.id)
-                old_ia.amount = ia["amount"]
-                old_ia.save()
+                if old_ia is None:
+                    # Create news
+                    new_ia = IngredientAmount(
+                        amount=ia["amount"],
+                        ingredient=related_ingredient,
+                    )
+                    new_ia.save()
+                    meal.ingredientAmounts.add(new_ia)
+                    new_ia.save()
+                else:
+                    # Update olds
+                    if old_ia.id in ingredientsToDelete:
+                        ingredientsToDelete.remove(old_ia.id)
+                    old_ia.amount = ia["amount"]
+                    old_ia.save()
 
-        for toDelete in ingredientsToDelete:
-            meal.ingredientAmounts.get(id=toDelete).delete()
+            for toDelete in ingredientsToDelete:
+                meal.ingredientAmounts.get(id=toDelete).delete()
 
-        meal.name = name
-        meal.image = request.data["image"]
-        meal.save()
-        return Response()
+            meal.name = name
+            meal.image = request.data["image"]
+            meal.save()
+            return Response()
+
+        except IntegrityError:
+            name = request.data["name"]
+            return Response(
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                data=f"The name '{name}' already exists.",
+            )
+
+        except:
+            return Response(status=status.HTTP_400_BAD_REQUEST)

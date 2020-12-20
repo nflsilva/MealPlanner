@@ -1,6 +1,6 @@
 import React from 'react'
 import { Link } from 'react-router-dom';
-import { Nav, Navbar} from 'react-bootstrap';
+import { Navbar} from 'react-bootstrap';
 
 export default function TopNavbar() {
     return (
@@ -9,11 +9,11 @@ export default function TopNavbar() {
             <Link className="navbar-brand" to="/">Meal Planner</Link>
             <Navbar.Toggle className="navbar-toggler" />
             <Navbar.Collapse>
-                <ul class="navbar-nav mr-auto">
-                    <li class="nav-item">
+                <ul className="navbar-nav mr-auto">
+                    <li className="nav-item">
                         <Link className="nav-link" to="/meals/">Meals</Link>
                     </li>
-                    <li class="nav-item">
+                    <li className="nav-item">
                         <Link className="nav-link" to="/ingredients/">Ingredients</Link>
                     </li>
                 </ul>

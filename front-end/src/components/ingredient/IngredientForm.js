@@ -56,34 +56,30 @@ export default function IngredientForm({ match }) {
         formData.append("carbohydrates", ing.carbohydrates)
         formData.append("image", ing.image)
 
-
-        var promess
-        var alertMessage
         if(match.params.id){
-            promess = Axios.put(
-                `${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/${match.params.id}/`, 
-                formData,
-                {
-                    headers: {
-                      'Content-Type': 'multipart/form-data'
-                    }
-                });
-            alertMessage = 'updated';
+            Axios.put(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/${match.params.id}/`, formData, { headers: {'Content-Type': 'multipart/form-data'}})
+            .then((res) => {
+                alert.success(`${name} was successfully updated.`);
+                setTimeout(() => {
+                    window.location.href = '/ingredients/'
+                }, 1000);
+            })
+            .catch((err) => {
+                alert.error(err.response.data)
+            })
         }
         else {
-            promess = Axios.post(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/`, ing);
-            alertMessage = 'added';
+            Axios.post(`${process.env.REACT_APP_BACKEND_HOST}/api/ingredients/`, formData, { headers: {'Content-Type': 'multipart/form-data'}})
+            .then((res) => {
+                alert.success(`${name} was successfully added.`);
+                setTimeout(() => {
+                    window.location.href = '/ingredients/'
+                }, 1000);
+            })
+            .catch((err) => {
+                alert.error(err.response.data)
+            })
         }
-
-        promess.then((res) => {
-            alert.success(`${name} was successfully ${alertMessage}.`);
-            setTimeout(() => {
-                window.location.href = '/ingredients/'
-            }, 1000);
-        })
-        .catch((err) => {
-            console.log(err)
-        })
 
     }
 
