@@ -16,6 +16,9 @@ export default function TopNavbar() {
                     <li className="nav-item">
                         <Link className="nav-link" to="/ingredients/">Ingredients</Link>
                     </li>
+                    <li className="nav-item">
+                        <Link className="nav-link" to="/plans/">Plans</Link>
+                    </li>
                 </ul>
             </Navbar.Collapse>
         </Navbar>

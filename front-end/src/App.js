@@ -9,6 +9,7 @@ import MealsList from "./components/meal/MealList";
 import MealForm from './components/meal/MealForm';
 import IngredientsList from "./components/ingredient/IngredientList";
 import IngredientForm from './components/ingredient/IngredientForm';
+import BuildPlan from './components/plan/BuildPlan';
 
 
 function App() {
@@ -28,6 +29,8 @@ function App() {
           
           <Route exact path="/meal" component={MealForm}/>
           <Route path="/meal/:id/" component={MealForm}/>
+
+          <Route path="/plans/" component={BuildPlan}/>
 
         </Switch>
 

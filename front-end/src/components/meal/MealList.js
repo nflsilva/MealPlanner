@@ -8,6 +8,7 @@ import GridCard from '../layout/GridCard'
 export default function MealList() {
 
     const [meals, setMeals] = useState([])
+    const [selectedMeals, setSelectedMeals] = useState([])
 
     useEffect(() => {
         Axios.get(`${process.env.REACT_APP_BACKEND_HOST}/api/meals/`)
@@ -18,9 +19,23 @@ export default function MealList() {
        })
     },[])
 
+    const onSelectMeal = (index) => {
+        setSelectedMeals([...selectedMeals, index])
+    }
+    const onDeselectMeal = (index) => {
+        var newMeals = selectedMeals
+        newMeals.splice(newMeals.indexOf(index), 1)
+        setSelectedMeals([...newMeals])
+    }
+
+    const onCreateMealPlan = (e) => {
+        alert(selectedMeals)
+    }
+
     return (
         <Fragment>
             <PageTitle title="My Meals"/>
+            <button className="btn btn-primary" onClick={onCreateMealPlan}>Create Mealplan</button>
             <Grid container spacing={1}>
                 <Grid item xs={6} sm={3} md={2} lm={1}>
                     <GridCard 
@@ -29,13 +44,16 @@ export default function MealList() {
                         link={'/meal'}
                     />
                 </Grid>
-                {meals.map((meal) => (
+                {meals.map((meal, index) => (
                     <Grid key={meal.id} item xs={6} sm={3} md={2} lm={1}>
                         <GridCard 
+                            index={index}
                             name={`${meal.name}`} 
                             isAdd={false} 
                             link={`/meal/${meal.id}/`} 
                             image={meal.image}
+                            onCheckboxSelect={onSelectMeal}
+                            onCheckboxDeselect={onDeselectMeal}
                         />
                     </Grid>
                 ))}

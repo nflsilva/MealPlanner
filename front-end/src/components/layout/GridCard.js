@@ -1,9 +1,22 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import defaultImage from '../../images/cardDefaultImage.png'
 import addImage from '../../images/cardDefaultImageAdd.png'
 
 export default function GridCard(props) {
+
+    const [isSelected, setSelected] = useState(false)
+
+    const onSelectChange = (e) => {
+        if(isSelected){
+            props.onCheckboxDeselect(props.index)
+        }
+        else {
+            props.onCheckboxSelect(props.index)
+        }
+        setSelected(!isSelected)
+    }
+
     return (
 
         <div className="card bg-dark text-white" style={{height: "180px"}}>
@@ -19,6 +32,12 @@ export default function GridCard(props) {
             </Link>
             <div className="card-body">
                 <h6 className="card-title">{props.name}</h6>
+            </div>
+
+            <div className="form-group card-header">
+                <div class="form-check">
+                    <input class="form-check-input" type="checkbox" onChange={onSelectChange}></input>
+                </div>
             </div>
         </div>
 
